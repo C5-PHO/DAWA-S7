@@ -1,61 +1,45 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import cors from "cors";
-import mongoose from 'mongoose';
-import authRoutes from './routes/auth.routes.js';
-import userRoutes from './routes/users.routes.js';
+import { loadConfig } from './config/environment.js';
+import { connectDatabase, disconnectDatabase } from './config/database.js';
+import { createApp } from './app.js';
 import seedRoles from './utils/seedRoles.js';
 import seedUsers from './utils/seedUsers.js';
-import cookieParser from 'cookie-parser';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-import pagesRoutes from './routes/pages.routes.js';
-dotenv.config();
 
-const app = express();
-const root = path.dirname(fileURLToPath(import.meta.url));
-app.set('view engine', 'ejs');
-app.set('views', path.join(root, 'views'));
-app.use(cookieParser());
-app.use('/assets', express.static(path.join(root, 'public')));
-app.use('/materialize', express.static(path.join(root, '../node_modules/materialize-css/dist')));
+let server;
+let stopping = false;
 
-// Habilitar CORS para todos
-app.use(cors());
+async function shutdown() {
+    if (stopping) return;
+    stopping = true;
+    const deadline = setTimeout(() => process.exit(1), 10000);
+    deadline.unref();
+    try {
+        if (server) await new Promise((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
+        await disconnectDatabase();
+        clearTimeout(deadline);
+    } catch (error) {
+        console.error('Error al cerrar el servidor:', error.message);
+        process.exitCode = 1;
+    }
+}
 
-app.use(express.json());
-
-// Rutas
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use(pagesRoutes);
-
-// Validar estado del servidor
-app.get('/health', (req, res) => res.status(200).json({ ok: true }));
-app.use((req, res) => {
-    if (req.path.startsWith('/api/')) return res.status(404).json({ message: 'Ruta no encontrada' });
-    res.status(404).render('error', { title: 'Página no encontrada', page: 'error', code: 404, message: 'La página que buscas no existe. Revisa la dirección o vuelve al inicio.' });
-});
-
-// Manejador global de errores
-app.use((err, req, res, next) => {
-    console.error(err);
-    if (err.code === 11000) return res.status(400).json({ message: 'El email ya se encuentra en uso' });
-    if (err.name === 'ValidationError') return res.status(400).json({ message: err.message });
-    res.status(err.status || 500).json({ message: err.message || 'Error interno del servidor' });
-});
-
-const PORT = process.env.PORT || 3000;
-
-mongoose.connect(process.env.MONGODB_URI, { autoIndex: true })
-    .then( async () => {
-        console.log('Mongo connected');
-        await seedRoles();
-        await seedUsers();
-        app.listen(PORT, () => console.log(`Servidor corriendo en el puerto ${PORT}`));
-    })
-    .catch(err => {
-        console.error('Error al conectar con Mongo:', err);
-        process.exit(1);
+async function start() {
+    const config = loadConfig();
+    await connectDatabase(config);
+    await seedRoles();
+    await seedUsers();
+    const app = createApp(config);
+    server = app.listen(config.port, () => console.log(`Servidor corriendo en el puerto ${server.address().port}`));
+    server.on('error', async error => {
+        console.error('No se pudo iniciar HTTP:', error.message);
+        process.exitCode = 1;
+        await shutdown();
     });
+}
 
+process.on('SIGINT', shutdown);
+process.on('SIGTERM', shutdown);
+start().catch(async error => {
+    console.error('No se pudo iniciar el servidor:', error.message);
+    process.exitCode = 1;
+    await shutdown();
+});

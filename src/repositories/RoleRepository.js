@@ -13,6 +13,10 @@ class RoleRepository {
     async getAll() {
         return Role.find().exec();
     }
+
+    async ensure(name) {
+        return Role.findOneAndUpdate({ name }, { $setOnInsert: { name } }, { upsert: true, new: true, runValidators: true }).exec();
+    }
 }
 
 export default new RoleRepository();
