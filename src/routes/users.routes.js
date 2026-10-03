@@ -10,6 +10,8 @@ router.get('/', authenticate, authorize(['admin']), UserController.getAll);
 
 // GET /api/users/me (cualquier usuario autenticado)
 router.get('/me', authenticate, authorize([]), UserController.getMe);
+router.patch('/me', authenticate, authorize([]), UserController.updateMe);
+router.get('/:id', authenticate, authorize(['admin']), UserController.getById);
 
 export default router;
 

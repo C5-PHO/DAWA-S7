@@ -2,6 +2,16 @@ import userService from '../services/UserService.js';
 
 class UserController {
 
+    async getById(req, res, next) {
+        try { res.json(await userService.getById(req.params.id)); }
+        catch (err) { next(err); }
+    }
+
+    async updateMe(req, res, next) {
+        try { res.json(await userService.updateMe(req.userId, req.body)); }
+        catch (err) { next(err); }
+    }
+
     async getAll(req, res, next) {
         try {
             const users = await userService.getAll();
