@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <title>Mi cuenta</title>
+  <rect width="64" height="64" rx="16" fill="#001414"/>
+  <rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#31554d" stroke-width="1.5"/>
+  <path d="M16 46V20h8l8 13 8-13h8v26h-8V33l-8 12-8-12v13Z" fill="#79e8cc"/>
+  <circle cx="52" cy="12" r="3" fill="#fff"/>
+</svg>
