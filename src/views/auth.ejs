@@ -1,0 +1,16 @@
+<%- include('partials/header') %>
+<section class="auth-layout">
+  <div class="intro"><p class="eyebrow">TU ESPACIO PERSONAL</p><h1>Todo comienza<br>con tu cuenta.</h1><p class="lead">Accede a tu perfil, mantén tus datos al día y encuentra todo en un solo lugar.</p><div class="intro-note"><span class="number">01</span><div><strong>Un acceso, tu espacio.</strong><p>Tu información disponible cuando la necesitas.</p></div></div></div>
+  <div class="panel auth-panel"><p class="eyebrow"><%= page === 'signIn' ? 'BIENVENIDO DE NUEVO' : 'COMIENZA AQUÍ' %></p><h2><%= title %></h2><p class="muted"><%= page === 'signIn' ? 'Ingresa tus datos para continuar.' : 'Completa tus datos para crear tu cuenta.' %></p>
+  <div id="message" class="notice" role="status" hidden></div>
+  <form id="auth-form">
+    <% if (page === 'signUp') { %><%- include('partials/fields') %><% } else { %>
+    <div class="input-field"><input id="email" name="email" type="email" required autocomplete="username"><label for="email">Correo electrónico</label></div>
+    <div class="input-field"><input id="password" name="password" type="password" required autocomplete="current-password"><label for="password">Contraseña</label></div>
+    <% } %>
+    <button class="btn waves-effect waves-light full" type="submit"><%= page === 'signIn' ? 'Iniciar sesión' : 'Crear mi cuenta' %></button>
+  </form>
+  <p class="form-switch"><%= page === 'signIn' ? '¿Aún no tienes cuenta?' : '¿Ya tienes una cuenta?' %> <a href="<%= page === 'signIn' ? '/signUp' : '/signIn' %>"><%= page === 'signIn' ? 'Regístrate' : 'Inicia sesión' %></a></p>
+  </div>
+</section>
+<%- include('partials/footer') %>

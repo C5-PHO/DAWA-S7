@@ -1,0 +1,7 @@
+<%- include('partials/header') %>
+<section class="page-heading"><p class="eyebrow">TU INFORMACIÓN</p><h1>Mi cuenta</h1><p class="lead">Revisa tus datos y actualiza lo que necesites.</p></section>
+<div class="profile-layout" data-protected hidden>
+  <aside class="panel summary"><div class="avatar" id="avatar">MC</div><h2 id="profile-name"></h2><p id="profile-email" class="muted"></p><div id="profile-roles"></div><hr><p>Edad <strong id="profile-age"></strong></p><p>Miembro desde <strong id="profile-created"></strong></p><a class="btn-flat" href="/dashboard/user">Volver al dashboard</a></aside>
+  <section class="panel"><h2>Datos personales</h2><p class="muted">Tu contraseña actual se conserva si dejas el campo vacío.</p><div id="message" class="notice" role="status" hidden></div><form id="profile-form"><%- include('partials/fields') %><button type="submit" class="btn waves-effect">Guardar cambios</button></form></section>
+</div>
+<%- include('partials/footer') %>

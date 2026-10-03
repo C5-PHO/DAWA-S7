@@ -1,0 +1,12 @@
+<div class="row">
+  <div class="input-field col s12 m6"><input id="name" name="name" type="text" required maxlength="100" autocomplete="given-name"><label for="name">Nombres</label></div>
+  <div class="input-field col s12 m6"><input id="lastName" name="lastName" type="text" required maxlength="100" autocomplete="family-name"><label for="lastName">Apellidos</label></div>
+  <div class="input-field col s12 m6"><input id="phoneNumber" name="phoneNumber" type="tel" required autocomplete="tel" maxlength="20"><label for="phoneNumber">Teléfono</label></div>
+  <div class="input-field col s12 m6"><input id="birthdate" name="birthdate" type="date" required min="1900-01-01"><label for="birthdate" class="active">Fecha de nacimiento</label></div>
+  <div class="input-field col s12"><input id="email" name="email" type="email" required autocomplete="email"><label for="email">Correo electrónico</label></div>
+  <div class="input-field col s12"><input id="password" name="password" type="password" <%= page === 'signUp' ? 'required' : '' %> minlength="8" autocomplete="new-password"><label for="password"><%= page === 'signUp' ? 'Contraseña' : 'Nueva contraseña (opcional)' %></label><span class="helper-text">Mínimo 8 caracteres, una mayúscula, un número y uno de estos símbolos: # $ % & * @.</span></div>
+  <% if (page === 'profile') { %>
+  <div class="input-field col s12"><input id="url_profile" name="url_profile" type="url"><label for="url_profile">URL de tu foto de perfil</label></div>
+  <div class="input-field col s12"><input id="address" name="address" type="text" autocomplete="street-address"><label for="address">Dirección</label></div>
+  <% } %>
+</div>
