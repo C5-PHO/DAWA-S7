@@ -24,6 +24,8 @@ test('Registration validation rejects weak passwords and impossible birthdates',
 test('Full account flow enforces roles, protects pages and saves profile changes', { timeout: 30000 }, async () => {
     const database = `auth_lab_test_${process.pid}_${Date.now()}`;
     const connection = await mongoose.createConnection(process.env.MONGODB_URI, { dbName: database, serverSelectionTimeoutMS: 3000 }).asPromise();
+    // El arranque debe completar los roles incluso si la base está parcialmente inicializada.
+    await connection.collection('roles').insertOne({ name: 'user' });
     const probe = net.createServer(); probe.listen(0, '127.0.0.1'); await once(probe, 'listening');
     const port = probe.address().port; await new Promise(resolve => probe.close(resolve));
     const secret = 'isolated-laboratory-test-secret';
@@ -41,6 +43,7 @@ test('Full account flow enforces roles, protects pages and saves profile changes
             await new Promise(resolve => setTimeout(resolve, 100));
         }
         assert.equal((await request('/health')).status, 200, output);
+        assert.equal(await connection.collection('roles').countDocuments(), 2);
         for (const path of ['/signIn', '/signUp']) assert.equal((await request(path)).status, 200);
         assert.equal((await request('/missing-page')).status, 404);
         assert.equal((await request('/profile')).headers.get('location'), '/signIn');
@@ -69,7 +72,12 @@ test('Full account flow enforces roles, protects pages and saves profile changes
         const adminLogin = await request('/api/auth/signIn', 'POST', { email: 'admin@test.local', password: 'Admin#2026' });
         const adminCookie = adminLogin.headers.get('set-cookie').split(';')[0]; const admin = await adminLogin.json();
         assert.equal((await request('/dashboard/admin', 'GET', null, null, adminCookie)).status, 200);
-        const users = await (await request('/api/users', 'GET', null, admin.token)).json(); assert.equal(users.length, 2); assert.ok(users.every(user => !('password' in user)));
+        const directory = await (await request('/api/users', 'GET', null, admin.token)).json(); assert.equal(directory.pagination.total, 2); assert.ok(directory.users.every(user => !('password' in user)));
+        const first = await (await request('/api/users?page=1&limit=1', 'GET', null, admin.token)).json();
+        const second = await (await request('/api/users?page=2&limit=1', 'GET', null, admin.token)).json();
+        assert.equal(first.users.length, 1); assert.equal(first.pagination.totalPages, 2); assert.notEqual(first.users[0].id, second.users[0].id);
+        assert.equal((await request('/api/users?page=0', 'GET', null, admin.token)).status, 400);
+        assert.equal((await request('/api/users?limit=1000', 'GET', null, admin.token)).status, 400);
         assert.equal((await request(`/api/users/${registered.id}`, 'GET', null, admin.token)).status, 200);
         assert.equal((await request('/api/users/not-an-id', 'GET', null, admin.token)).status, 404);
         const out = await request('/api/auth/signOut', 'POST'); assert.equal(out.status, 200); assert.match(out.headers.get('set-cookie'), /Expires=Thu, 01 Jan 1970/);

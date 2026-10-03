@@ -5,8 +5,13 @@ import { publicUser, profileData, validatePassword, fail } from '../utils/userVa
 
 class UserService {
 
-    async getAll() {
-        return (await userRepository.getAll()).map(publicUser);
+    async getAll(query = {}) {
+        const page = Number(query.page ?? 1);
+        const limit = Number(query.limit ?? 10);
+        if (!Number.isInteger(page) || page < 1 || page > 10000) fail('La página debe estar entre 1 y 10000.');
+        if (!Number.isInteger(limit) || limit < 1 || limit > 50) fail('El límite debe estar entre 1 y 50.');
+        const { users, total } = await userRepository.getPage(page, limit);
+        return { users: users.map(publicUser), pagination: { page, limit, total, totalPages: Math.max(1, Math.ceil(total / limit)) } };
     }
 
     async getById(id) {

@@ -22,6 +22,14 @@ class UserRepository {
         return User.find().populate('roles').exec();
     }
 
+    async getPage(page, limit) {
+        const [users, total] = await Promise.all([
+            User.find().select('-password').sort({ createdAt: -1, _id: -1 }).skip((page - 1) * limit).limit(limit).populate('roles').exec(),
+            User.countDocuments().exec()
+        ]);
+        return { users, total };
+    }
+
     async updateProfile(id, data) {
         return User.findByIdAndUpdate(id, { $set: data }, { new: true, runValidators: true }).populate('roles').exec();
     }

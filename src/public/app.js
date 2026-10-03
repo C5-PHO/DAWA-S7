@@ -107,8 +107,18 @@ async function initialize() {
         document.getElementById('welcome').textContent = `Hola, ${user.name}.`;
         fillDetails(document.getElementById('user-summary'), user);
     } else {
-        const users = await api('/api/users'); document.getElementById('user-count').textContent = users.length;
+        const previous = document.getElementById('previous-page');
+        const next = document.getElementById('next-page');
+        let currentPage = 1;
+        async function loadUsersPage(number) {
+        previous.disabled = true; next.disabled = true;
+        try {
+        const { users, pagination } = await api(`/api/users?page=${number}&limit=10`);
+        currentPage = pagination.page;
+        document.getElementById('user-count').textContent = pagination.total;
+        document.getElementById('page-info').textContent = `Página ${pagination.page} de ${pagination.totalPages} · ${pagination.total} usuarios`;
         const tbody = document.getElementById('users-table');
+        tbody.replaceChildren();
         for (const item of users) {
             const row = document.createElement('tr');
             for (const value of [`${item.name} ${item.lastName || ''}`, item.email, rolesLabel(item), dateLabel(item.createdAt)]) { const cell = document.createElement('td'); cell.textContent = value; row.append(cell); }
@@ -116,6 +126,16 @@ async function initialize() {
             button.addEventListener('click', async () => { try { const detail = await api(`/api/users/${item.id}`); document.getElementById('detail-name').textContent = `${detail.name} ${detail.lastName || ''}`; fillDetails(document.getElementById('user-detail'), detail); M.Modal.getInstance(document.getElementById('user-modal')).open(); } catch (error) { message(error.message, true); } });
             cell.append(button); row.append(cell); tbody.append(row);
         }
+        previous.disabled = currentPage <= 1;
+        next.disabled = currentPage >= pagination.totalPages;
+        } catch (error) {
+            previous.disabled = currentPage <= 1;
+            message(error.message, true);
+        }
+        }
+        previous.addEventListener('click', () => loadUsersPage(currentPage - 1));
+        next.addEventListener('click', () => loadUsersPage(currentPage + 1));
+        await loadUsersPage(1);
     }
 }
 initialize().catch(error => message(error.message, true));

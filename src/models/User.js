@@ -26,5 +26,7 @@ const UserSchema = new mongoose.Schema({
     address: { type: String, default: '' }
 }, { timestamps: true });
 
+UserSchema.index({ createdAt: -1, _id: -1 });
+
 export default mongoose.model('User', UserSchema);
 

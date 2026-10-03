@@ -13,7 +13,7 @@ async function shutdown() {
     const deadline = setTimeout(() => process.exit(1), 10000);
     deadline.unref();
     try {
-        if (server) await new Promise((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
+        if (server?.listening) await new Promise((resolve, reject) => server.close(error => error ? reject(error) : resolve()));
         await disconnectDatabase();
         clearTimeout(deadline);
     } catch (error) {
