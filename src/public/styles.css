@@ -243,3 +243,5 @@ th { background: #e6f0edb3; }
 .table-pagination { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 18px; border-top: 1px solid var(--line); padding-top: 12px; }
 .table-pagination .btn-flat:disabled { color: #647672; background: transparent; opacity: .65; }
 @media (max-width: 600px) { .table-pagination { flex-direction: column; align-items: flex-start; gap: 4px; } }
+
+.modal.modal-fixed-footer { height: 80vh; max-height: 82vh; }
