@@ -115,3 +115,87 @@ body[data-page=admin] footer { margin-top: 45px; }
   .stats { grid-template-columns: 1fr; }
   .intro h1 { font-size: 36px; }
 }
+
+/* Liquid Glass: superficies suaves con una base legible sin backdrop-filter. */
+body {
+  background:
+    radial-gradient(ellipse at 8% 20%, #b9e7db80 0, transparent 42%),
+    radial-gradient(ellipse at 94% 36%, #e7d9b66b 0, transparent 40%),
+    radial-gradient(ellipse at 65% 95%, #c4e5e56b 0, transparent 46%),
+    var(--bg);
+  background-attachment: fixed;
+}
+nav {
+  background: #001414;
+  border-bottom-color: #6cb8a64d;
+  box-shadow: inset 0 1px 0 #ffffff14, 0 8px 24px #00141412;
+}
+nav ul a:hover, nav ul a[aria-current=page] {
+  background: linear-gradient(145deg, #ffffff14, #79e8cc0f);
+}
+.panel, .intro, .modal {
+  border-radius: 22px;
+  border: 1px solid #ffffffcc;
+  box-shadow: inset 0 1px 0 #ffffffdb, 0 12px 36px #1233330b, 0 2px 5px #12333305;
+}
+.panel { background: #ffffffed; }
+.intro, .stats .panel:first-child, .welcome-card {
+  background: linear-gradient(135deg, #174b43f5, #073330f5 65%);
+  border-color: #8bd1bd45;
+  box-shadow: inset 0 1px 0 #c5f8e333, inset 1px 0 0 #c5f8e314, 0 14px 40px #0014141a;
+}
+.stats .panel:nth-child(2) {
+  background: linear-gradient(135deg, #fff9eefa, #fff6e7e6);
+  border-color: #ffffffd9;
+}
+.summary { border-top: 3px solid #348b76; }
+.avatar {
+  background: linear-gradient(145deg, #eefbf3, #c2ead9);
+  border: 1px solid #ffffffcc;
+  box-shadow: inset 0 1px 0 #ffffff, 0 6px 16px #006b6112;
+}
+.chip, .details-button {
+  background: #e1f2eadb;
+  box-shadow: inset 0 1px 0 #ffffffa6;
+}
+.btn {
+  background: linear-gradient(150deg, #08796c, #00675d);
+  border: 1px solid #ffffff24;
+  box-shadow: inset 0 1px 0 #ffffff33, 0 5px 12px #006b611c;
+}
+.btn:hover, .btn:focus {
+  background: linear-gradient(150deg, #006e61, #00534c);
+  box-shadow: inset 0 1px 0 #ffffff38, 0 7px 18px #006b612b;
+}
+.welcome-card .btn {
+  background: linear-gradient(145deg, #acf2dc, #79e8cc);
+  border-color: #defff080;
+}
+.welcome-card .btn:hover { background: #a4f0db; }
+nav .btn-flat {
+  background: #ffffff08;
+  border-color: #9bd6c84d;
+  box-shadow: inset 0 1px 0 #ffffff14;
+}
+th { background: #e6f0edb3; }
+.modal { background: #fffffff5; }
+.modal .modal-footer { background: #edf4f2b3; }
+.notice { box-shadow: inset 0 1px 0 #ffffffb3; }
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .panel, .modal {
+    background: #ffffffb8;
+    -webkit-backdrop-filter: blur(20px) saturate(130%);
+    backdrop-filter: blur(20px) saturate(130%);
+  }
+  .intro, .stats .panel:first-child, .welcome-card {
+    background: linear-gradient(135deg, #174b43ed, #073330f2 65%);
+    -webkit-backdrop-filter: blur(20px) saturate(130%);
+    backdrop-filter: blur(20px) saturate(130%);
+  }
+  .stats .panel:nth-child(2) { background: linear-gradient(135deg, #fff9eecf, #fff6e7b8); }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .panel, .modal { background: #ffffff; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .intro, .stats .panel:first-child, .welcome-card { background: #073330; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .stats .panel:nth-child(2) { background: #fff6e7; }
+}
