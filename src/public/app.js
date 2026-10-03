@@ -51,7 +51,7 @@ function navigation(user) {
     const nav = document.getElementById('navigation'); nav.replaceChildren();
     const links = [['Mi dashboard', '/dashboard/user'], ['Mi cuenta', '/profile']];
     if (user.roles.includes('admin')) links.unshift(['Administración', '/dashboard/admin']);
-    for (const [label, href] of links) { const li = document.createElement('li'); const a = document.createElement('a'); a.href = href; a.textContent = label; li.append(a); nav.append(li); }
+    for (const [label, href] of links) { const li = document.createElement('li'); const a = document.createElement('a'); a.href = href; a.textContent = label; if (location.pathname === href) a.setAttribute('aria-current', 'page'); li.append(a); nav.append(li); }
     const li = document.createElement('li'); const button = document.createElement('button'); button.type = 'button'; button.className = 'btn-flat'; button.textContent = 'Salir'; button.addEventListener('click', logout); li.append(button); nav.append(li);
 }
 
