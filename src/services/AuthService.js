@@ -1,4 +1,3 @@
-AuthService
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import userRepository from '../repositories/UserRepository.js';
