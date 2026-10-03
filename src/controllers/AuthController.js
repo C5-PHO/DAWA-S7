@@ -23,6 +23,8 @@ class AuthController {
                 return res.status(400).json({ message: 'El email y password son requeridos' });
             
             const token = await authService.signIn({ email, password });
+            // Cookie para proteger las páginas EJS; sessionStorage para la API.
+            res.cookie('session_token', token.token, { httpOnly: true, sameSite: 'lax', secure: process.env.NODE_ENV === 'production', path: '/' });
             return res.status(200).json(token);
         } catch (err) {
             next(err);
