@@ -4,15 +4,16 @@
   "description": "",
   "type": "module",
   "scripts": {
+    "test": "node --test",
     "mongo": "powershell -NoProfile -ExecutionPolicy Bypass -File scripts/start-mongo.ps1",
     "start": "node src/server.js",
-    "dev": "nodemon --watch src --exec node --experimental-specifier-resolution=node src/server.js"
+    "dev": "nodemon --watch src --ext js,ejs,css --exec node src/server.js"
   },
   "keywords": [],
   "author": "earevalo",
   "license": "ISC",
   "dependencies": {
-    "bcrypt": "^5.1.0",
+    "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
@@ -23,6 +24,6 @@
     "mongoose": "^7.0.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.0"
+    "nodemon": "^3.1.14"
   }
 }
